@@ -8,24 +8,26 @@ type PlayerActionsProps = {
 export default function PlayerActions({ title, url }: PlayerActionsProps) {
   const canDownload = Boolean(url);
 
-  const handleDownload = async (e: React.MouseEvent) => {
+  const handleDownload = (e: React.MouseEvent) => {
     if (!url) return;
     e.preventDefault();
-    try {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = downloadUrl;
-      link.download = `${title}.mp4`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(downloadUrl);
-    } catch (err) {
-      // Fallback to direct link if fetch fails
-      window.open(url, '_blank');
-    }
+    
+    // Create a temporary anchor element
+    const link = document.createElement('a');
+    
+    // Add ?download=true to the URL
+    const downloadUrl = url.includes('?') ? `${url}&download=true` : `${url}?download=true`;
+    
+    link.href = downloadUrl;
+    link.download = `${title}.mp4`;
+    
+    // Set target to _blank to ensure it doesn't navigate away in some browsers
+    // though the download attribute should handle it
+    link.target = '_blank';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (

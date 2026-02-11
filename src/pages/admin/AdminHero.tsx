@@ -5,16 +5,45 @@ import { Plus, Pencil, Trash2 } from "lucide-react";
 import heroBanner1 from "@/assets/hero-banner-1.jpg";
 
 const AdminHero = () => {
-  const { heroSlides, addHeroSlide, updateHeroSlide, deleteHeroSlide } = useMovies();
+  const { heroSlides, addHeroSlide, updateHeroSlide, deleteHeroSlide, movies, series, tvChannels } = useMovies();
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState({ title: "", description: "", genre: "", year: 2026, rating: 8.5 });
+  const [form, setForm] = useState({ 
+    title: "", 
+    description: "", 
+    genre: "", 
+    year: 2026, 
+    rating: 8.5,
+    contentId: "",
+    contentType: "movie" as "movie" | "series" | "tv-channel"
+  });
 
-  const resetForm = () => { setForm({ title: "", description: "", genre: "", year: 2026, rating: 8.5 }); setEditingId(null); setShowForm(false); };
+  const resetForm = () => { 
+    setForm({ 
+      title: "", 
+      description: "", 
+      genre: "", 
+      year: 2026, 
+      rating: 8.5,
+      contentId: "",
+      contentType: "movie"
+    }); 
+    setEditingId(null); 
+    setShowForm(false); 
+  };
 
   const handleEdit = (s: HeroSlide) => {
-    setForm({ title: s.title, description: s.description, genre: s.genre, year: s.year, rating: s.rating });
-    setEditingId(s.id); setShowForm(true);
+    setForm({ 
+      title: s.title, 
+      description: s.description, 
+      genre: s.genre, 
+      year: s.year, 
+      rating: s.rating,
+      contentId: s.contentId || "",
+      contentType: s.contentType || "movie"
+    });
+    setEditingId(s.id); 
+    setShowForm(true);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -44,6 +73,40 @@ const AdminHero = () => {
             <input type="number" className="h-10 px-3 rounded-lg bg-secondary border border-border text-foreground text-sm" placeholder="Year" value={form.year} onChange={(e) => setForm({ ...form, year: Number(e.target.value) })} />
             <input type="number" step="0.1" className="h-10 px-3 rounded-lg bg-secondary border border-border text-foreground text-sm" placeholder="Rating" value={form.rating} onChange={(e) => setForm({ ...form, rating: Number(e.target.value) })} />
             <textarea className="px-3 py-2 rounded-lg bg-secondary border border-border text-foreground text-sm md:col-span-2" placeholder="Description" rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} required />
+            
+            <div className="md:col-span-1 flex flex-col gap-2">
+              <label className="text-xs text-muted-foreground ml-1">Link to Content Type</label>
+              <select 
+                className="h-10 px-3 rounded-lg bg-secondary border border-border text-foreground text-sm"
+                value={form.contentType}
+                onChange={(e) => setForm({ ...form, contentType: e.target.value as any })}
+              >
+                <option value="movie">Movie</option>
+                <option value="series">Series</option>
+                <option value="tv-channel">TV Channel</option>
+              </select>
+            </div>
+
+            <div className="md:col-span-1 flex flex-col gap-2">
+              <label className="text-xs text-muted-foreground ml-1">Select Content</label>
+              <select 
+                className="h-10 px-3 rounded-lg bg-secondary border border-border text-foreground text-sm"
+                value={form.contentId}
+                onChange={(e) => setForm({ ...form, contentId: e.target.value })}
+              >
+                <option value="">None (Static link)</option>
+                {form.contentType === "movie" && movies.map(m => (
+                  <option key={m.id} value={m.id}>{m.title}</option>
+                ))}
+                {form.contentType === "series" && series.map(s => (
+                  <option key={s.id} value={s.id}>{s.title}</option>
+                ))}
+                {form.contentType === "tv-channel" && tvChannels.map(c => (
+                  <option key={c.id} value={c.id}>{c.title}</option>
+                ))}
+              </select>
+            </div>
+
             <div className="flex gap-2 md:col-span-2">
               <button type="submit" className="px-6 py-2 rounded-lg gradient-primary text-primary-foreground text-sm font-medium">{editingId ? "Update" : "Add"}</button>
               <button type="button" onClick={resetForm} className="px-6 py-2 rounded-lg bg-secondary text-foreground text-sm">Cancel</button>

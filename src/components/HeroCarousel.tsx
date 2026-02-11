@@ -26,6 +26,18 @@ const HeroCarousel = () => {
 
   const slide = heroSlides[currentSlide % heroSlides.length];
 
+  const handleWatchNow = () => {
+    if (slide.contentId) {
+      if (slide.contentType === "tv-channel") {
+        navigate(`/tv-channels`); // Assuming a channel listing or specific play page
+      } else {
+        navigate(`/play/${slide.contentId}`);
+      }
+    } else {
+      navigate(`/play/${slide.id}`);
+    }
+  };
+
   return (
     <div className="relative w-full aspect-[21/9] md:aspect-[21/7] min-h-[200px] md:min-h-[320px] max-h-[400px] overflow-hidden rounded-xl">
       {heroSlides.map((s, i) => (
@@ -45,14 +57,14 @@ const HeroCarousel = () => {
           <h2 className="text-xl md:text-3xl font-bold text-white mb-4">{slide.title}</h2>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => navigate(`/play/${slide.id}`)}
+              onClick={handleWatchNow}
               className="flex items-center gap-2 px-4 py-2 rounded-full gradient-primary text-primary-foreground font-semibold text-xs hover:opacity-90 transition-opacity"
             >
               <Play className="w-3 h-3 fill-current" />
               Watch Now
             </button>
             <button 
-              onClick={() => navigate(`/play/${slide.id}`)}
+              onClick={handleWatchNow}
               className="px-4 py-2 rounded-full border border-white/30 text-white text-xs font-medium hover:bg-white/10 transition-all"
             >
               Details
