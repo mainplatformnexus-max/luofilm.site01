@@ -20,6 +20,8 @@ export interface HeroSlide {
   genre: string;
   year: number;
   rating: number;
+  contentId?: string;
+  contentType?: "movie" | "series" | "tv-channel";
 }
 
 export const heroSlides: HeroSlide[] = [];
