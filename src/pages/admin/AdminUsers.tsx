@@ -2,22 +2,16 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Trash2, Shield, ShieldOff, CreditCard } from "lucide-react";
 
 const AdminUsers = () => {
-  const { allUsers, updateUser, deleteUser, subscribe } = useAuth();
+  const { allUsers, updateUser, deleteUser, adminSubscribeForUser } = useAuth();
 
   const handleManualSubscription = async (userId: string) => {
-    // This is a simplified way to grant subscription from admin
-    // In a real app, we might want to select plan/duration
-    // For now, let's grant a 1-month 'normal' subscription
-    const subId = `sub-admin-${Date.now()}`;
-    const now = new Date();
-    const endDate = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000); // 1 month
-    
-    // We need to access the database directly or add a new method to useAuth
-    // Since I can't easily add a new method to useAuth and use it immediately without refresh
-    // I'll assume the user wants a way to "activate" it.
-    // I will use the existing 'subscribe' but it works for current user.
-    // Let's modify useAuth to allow admin to subscribe for others or just update a flag.
-    alert("Subscription activation for user " + userId + " requested. Granting 1 month normal access.");
+    try {
+      await adminSubscribeForUser(userId, "normal", "1month");
+      alert("Subscription activated successfully for 1 month!");
+    } catch (error) {
+      console.error("Error activating subscription:", error);
+      alert("Failed to activate subscription.");
+    }
   };
 
   return (

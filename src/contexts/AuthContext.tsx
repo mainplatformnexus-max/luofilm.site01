@@ -46,6 +46,7 @@ interface AuthContextType {
   updateUser: (userId: string, updates: Partial<User>) => void;
   deleteUser: (userId: string) => void;
   updateSubscription: (subId: string, updates: Partial<Subscription>) => void;
+  adminSubscribeForUser: (userId: string, plan: "normal" | "agent", duration: "1day" | "1week" | "1month") => Promise<void>;
   cancelSubscription: (subId: string) => void;
   loading: boolean;
 }
@@ -260,6 +261,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await update(ref(database, `subscriptions/${subId}`), updates);
   };
 
+  const adminSubscribeForUser = async (userId: string, plan: "normal" | "agent", duration: "1day" | "1week" | "1month") => {
+    const now = new Date();
+    const subId = `sub-admin-${Date.now()}`;
+    const newSub: Subscription = {
+      id: subId,
+      userId,
+      plan,
+      duration,
+      status: "active",
+      startDate: now.toISOString(),
+      endDate: new Date(now.getTime() + getDurationMs(duration)).toISOString(),
+    };
+    await set(ref(database, `subscriptions/${subId}`), newSub);
+  };
+
   const cancelSubscription = async (subId: string) => {
     await update(ref(database, `subscriptions/${subId}`), { status: "cancelled" });
   };
@@ -283,6 +299,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         updateUser,
         deleteUser,
         updateSubscription,
+        adminSubscribeForUser,
         cancelSubscription,
         loading,
       }}
