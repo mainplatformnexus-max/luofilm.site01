@@ -1,14 +1,16 @@
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import MovieCard from "./MovieCard";
 import type { Movie } from "@/data/movies";
 
 interface MovieSectionProps {
   title: string;
   movies: Movie[];
+  moreLink?: string;
 }
 
-const MovieSection = ({ title, movies }: MovieSectionProps) => {
+const MovieSection = ({ title, movies, moreLink = "/movies" }: MovieSectionProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -36,13 +38,13 @@ const MovieSection = ({ title, movies }: MovieSectionProps) => {
         <h3 className="text-foreground font-bold text-base md:text-lg">
           {title}
         </h3>
-        <a
-          href="#"
+        <Link
+          to={moreLink}
           className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors group"
         >
           <span>More</span>
           <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-        </a>
+        </Link>
       </div>
 
       <div className="relative group/section">

@@ -188,7 +188,7 @@ const PlayPage = () => {
       ],
     }, (art) => {
       // Ensure dashjs works with proxy URLs that might not have .mpd extension
-      if (videoUrl.includes('manifest.mpd') || videoUrl.includes('video-proxy')) {
+      if (videoUrl.toLowerCase().includes('.mpd') || videoUrl.includes('video-proxy')) {
         const player = dashjs.MediaPlayer().create();
         player.initialize(art.video, videoUrl, true);
       }
