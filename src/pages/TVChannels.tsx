@@ -73,15 +73,43 @@ const TVChannels = () => {
         },
       },
     }, (art) => {
-      // Ensure dashjs works with proxy URLs that might not have .mpd extension
-      if (videoUrl.includes('manifest.mpd') || videoUrl.includes('video-proxy')) {
+      // Improved MPD detection for TV channels
+      const isMpd = videoUrl.toLowerCase().includes('.mpd') || 
+                   videoUrl.includes('video-proxy') || 
+                   activeChannel.title.toLowerCase().includes('dash');
+      
+      if (isMpd) {
+        console.log("DASH/MPD stream detected, initializing dashjs...");
         const player = dashjs.MediaPlayer().create();
+        
+        // Optimize for Live TV
+        player.updateSettings({
+          'streaming': {
+            'lowLatencyEnabled': true,
+            'liveDelay': 3,
+            'retryIntervals': {
+              'MPD': 500
+            },
+            'retryAttempts': {
+              'MPD': 10
+            }
+          }
+        });
+
         player.initialize(art.video, videoUrl, true);
+        
+        // Store player instance on video element for cleanup if needed
+        (art.video as any).dashPlayer = player;
       }
     });
 
     return () => {
       if (artInstance.current) {
+        // Cleanup dash player if it exists
+        const video = artInstance.current.video;
+        if ((video as any).dashPlayer) {
+          (video as any).dashPlayer.destroy();
+        }
         artInstance.current.destroy(false);
         artInstance.current = null;
       }
