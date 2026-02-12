@@ -48,6 +48,38 @@ const PlayPage = () => {
 
   useEffect(() => {
     if (content) {
+      const pageTitle = `${content.title} luo translated movies free download vj paul ug`;
+      document.title = pageTitle;
+
+      // Update sharing metadata
+      const description = `${content.title} luo film translated movies`;
+      const metaDescription = document.querySelector('meta[name="description"]');
+      if (metaDescription) metaDescription.setAttribute("content", description);
+      
+      const ogTitle = document.querySelector('meta[property="og:title"]');
+      if (ogTitle) ogTitle.setAttribute("content", pageTitle);
+      
+      const ogDescription = document.querySelector('meta[property="og:description"]');
+      if (ogDescription) ogDescription.setAttribute("content", description);
+      
+      const ogImage = document.querySelector('meta[property="og:image"]');
+      if (ogImage && content.poster) ogImage.setAttribute("content", content.poster);
+
+      const twitterTitle = document.querySelector('meta[property="twitter:title"]');
+      if (twitterTitle) twitterTitle.setAttribute("content", pageTitle);
+
+      const twitterDescription = document.querySelector('meta[property="twitter:description"]');
+      if (twitterDescription) twitterDescription.setAttribute("content", description);
+
+      const twitterImage = document.querySelector('meta[property="twitter:image"]');
+      if (twitterImage && content.poster) twitterImage.setAttribute("content", content.poster);
+
+      // Update Favicon to include movie poster
+      const favicon = document.querySelector('link[rel="icon"]');
+      if (favicon && content.poster) {
+        favicon.setAttribute("href", content.poster);
+      }
+
       const genre = content.genre?.split(",")[0]?.trim();
       setRelatedContent(
         allContent
@@ -55,7 +87,16 @@ const PlayPage = () => {
           .slice(0, 8)
       );
     }
-  }, [id]);
+    
+    return () => {
+      // Reset title and favicon when leaving
+      document.title = "LUO FILM | luo translated movies, free download,free live ugandan tv channels";
+      const favicon = document.querySelector('link[rel="icon"]');
+      if (favicon) {
+        favicon.setAttribute("href", "https://i.postimg.cc/T2khf7dN/purple-pink-color-triangle-logo-1273375-228-removebg-preview.png");
+      }
+    };
+  }, [id, content]);
 
   useEffect(() => {
     if (!isSeries) return;

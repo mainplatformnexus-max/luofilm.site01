@@ -10,11 +10,13 @@ import { toast } from "sonner";
 const AdminDashboard = () => {
   const { movies, series, episodes, heroSlides, tvChannels } = useMovies();
   const { allUsers, allSubscriptions } = useAuth();
+  const [welcomeMessage, setWelcomeMessage] = useState(localStorage.getItem("welcome_message") || "");
   const [welcomeImage, setWelcomeImage] = useState(localStorage.getItem("welcome_image") || "");
   const [ctaText, setCtaText] = useState(localStorage.getItem("welcome_cta_text") || "Get Started");
   const [ctaLink, setCtaLink] = useState(localStorage.getItem("welcome_cta_link") || "/movies");
 
   const handleSaveWelcome = () => {
+    localStorage.setItem("welcome_message", welcomeMessage);
     localStorage.setItem("welcome_image", welcomeImage);
     localStorage.setItem("welcome_cta_text", ctaText);
     localStorage.setItem("welcome_cta_link", ctaLink);
@@ -55,6 +57,14 @@ const AdminDashboard = () => {
             <h3 className="font-bold text-lg text-foreground">Welcome Popup Settings</h3>
           </div>
           <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Welcome Message</Label>
+              <Input 
+                value={welcomeMessage} 
+                onChange={(e) => setWelcomeMessage(e.target.value)}
+                placeholder="e.g. Welcome to LUO FILM!"
+              />
+            </div>
             <div className="space-y-2">
               <Label>Welcome Image URL</Label>
               <Input 
