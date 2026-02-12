@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import MovieBoxHeader from "@/components/MovieBoxHeader";
-import MovieBoxSidebar from "@/components/MovieBoxSidebar";
+import LuoFilmHeader from "@/components/MovieBoxHeader";
+import LuoFilmSidebar from "@/components/MovieBoxSidebar";
 import HeroCarousel from "@/components/HeroCarousel";
 import MovieSection from "@/components/MovieSection";
 import { useMovies } from "@/contexts/MovieContext";
@@ -69,8 +69,8 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <MovieBoxHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
-      <MovieBoxSidebar isOpen={sidebarOpen} />
+      <LuoFilmHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+      <LuoFilmSidebar isOpen={sidebarOpen} />
 
       {/* Welcome Popup */}
       {showWelcome && (
@@ -106,7 +106,7 @@ const Index = () => {
 
       {/* App Download Message */}
       {showAppPromo && (
-        <div className="fixed bottom-4 inset-x-4 z-50 flex items-center justify-between p-4 bg-primary text-primary-foreground rounded-2xl shadow-2xl animate-in slide-in-from-bottom-full duration-500">
+        <div className="fixed top-16 inset-x-4 z-50 flex items-center justify-between p-4 bg-primary text-primary-foreground rounded-2xl shadow-2xl animate-in slide-in-from-top-full duration-500">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-white/20 rounded-xl">
               <Smartphone className="w-6 h-6" />

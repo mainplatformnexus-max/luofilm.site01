@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ArrowLeft, Lock } from "lucide-react";
 import Artplayer from "artplayer";
 import Hls from "hls.js";
-import dashjs from "dashjs";
+import * as dashjs from "dashjs";
 import SubscriptionModal from "@/components/SubscriptionModal";
 import LoginModal from "@/components/LoginModal";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -249,7 +249,7 @@ const PlayPage = () => {
                     <p className="text-sm text-muted-foreground mb-4 max-w-sm">
                       {needsAgent
                         ? "This content is available exclusively to Agent subscribers."
-                        : "Subscribe to MovieBox to watch this content."}
+                        : "Subscribe to LUO FILM to watch this content."}
                     </p>
                     <button
                       onClick={() => {
@@ -303,7 +303,7 @@ const PlayPage = () => {
         {relatedContent.length > 0 && (
           <div className="mt-8">
             <h3 className="text-xl font-bold text-foreground mb-6">You May Also Like</h3>
-            <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-2 md:gap-3">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-2 md:gap-3">
               {relatedContent.map((item) => (
                 <MovieCard key={item.id} movie={item} />
               ))}

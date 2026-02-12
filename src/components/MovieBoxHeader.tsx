@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginModal from "@/components/LoginModal";
 
-interface MovieBoxHeaderProps {
+interface LuoFilmHeaderProps {
   onToggleSidebar: () => void;
 }
 
-const MovieBoxHeader = ({ onToggleSidebar }: MovieBoxHeaderProps) => {
+const LuoFilmHeader = ({ onToggleSidebar }: LuoFilmHeaderProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -128,4 +128,4 @@ const MovieBoxHeader = ({ onToggleSidebar }: MovieBoxHeaderProps) => {
   );
 };
 
-export default MovieBoxHeader;
+export default LuoFilmHeader;

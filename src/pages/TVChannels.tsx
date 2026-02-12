@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import MovieBoxHeader from "@/components/MovieBoxHeader";
-import MovieBoxSidebar from "@/components/MovieBoxSidebar";
+import LuoFilmHeader from "@/components/MovieBoxHeader";
+import LuoFilmSidebar from "@/components/MovieBoxSidebar";
 import { useMovies } from "@/contexts/MovieContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Artplayer from "artplayer";
 import Hls from "hls.js";
-import dashjs from "dashjs";
+import * as dashjs from "dashjs";
 import { getPlayableVideoUrl } from "@/lib/videoProxy";
 
 const TVChannels = () => {
@@ -90,8 +90,8 @@ const TVChannels = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <MovieBoxHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
-      <MovieBoxSidebar isOpen={sidebarOpen} />
+      <LuoFilmHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+      <LuoFilmSidebar isOpen={sidebarOpen} />
       
       <main className={`pt-14 transition-all duration-300 ${sidebarOpen && !isMobile ? "ml-48" : "ml-0"}`}>
         <div className="p-4 md:p-6">

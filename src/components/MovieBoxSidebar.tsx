@@ -16,11 +16,11 @@ const sidebarNav = [
   { label: "Upcoming", icon: Calendar, href: "/upcoming" },
 ];
 
-interface MovieBoxSidebarProps {
+interface LuoFilmSidebarProps {
   isOpen: boolean;
 }
 
-const MovieBoxSidebar = ({ isOpen }: MovieBoxSidebarProps) => {
+const LuoFilmSidebar = ({ isOpen }: LuoFilmSidebarProps) => {
   return (
     <aside
       className={`fixed top-14 left-0 bottom-0 z-40 bg-sidebar border-r border-sidebar-border transition-all duration-300 overflow-y-auto scrollbar-hide hidden md:block ${
@@ -59,4 +59,4 @@ const MovieBoxSidebar = ({ isOpen }: MovieBoxSidebarProps) => {
   );
 };
 
-export default MovieBoxSidebar;
+export default LuoFilmSidebar;

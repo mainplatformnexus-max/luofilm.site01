@@ -1,7 +1,7 @@
 import { useMovies } from "@/contexts/MovieContext";
 import { useAuth } from "@/contexts/AuthContext";
-import MovieBoxHeader from "@/components/MovieBoxHeader";
-import MovieBoxSidebar from "@/components/MovieBoxSidebar";
+import LuoFilmHeader from "@/components/MovieBoxHeader";
+import LuoFilmSidebar from "@/components/MovieBoxSidebar";
 import MovieGrid from "@/components/MovieGrid";
 import { useState, useEffect } from "react";
 import { Crown, Lock } from "lucide-react";
@@ -37,8 +37,8 @@ const AgentPage = () => {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-background">
-        <MovieBoxHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
-        <MovieBoxSidebar isOpen={sidebarOpen} />
+        <LuoFilmHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+        <LuoFilmSidebar isOpen={sidebarOpen} />
         <main className={`pt-14 transition-all duration-300 ${sidebarOpen && !isMobile ? "ml-48" : "ml-0"}`}>
           <div className="flex items-center justify-center min-h-[60vh] pb-24 md:pb-0">
             <div className="text-center p-8">
@@ -65,8 +65,8 @@ const AgentPage = () => {
   if (!hasAgentAccess) {
     return (
       <div className="min-h-screen bg-background">
-        <MovieBoxHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
-        <MovieBoxSidebar isOpen={sidebarOpen} />
+        <LuoFilmHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+        <LuoFilmSidebar isOpen={sidebarOpen} />
         <main className={`pt-14 transition-all duration-300 ${sidebarOpen && !isMobile ? "ml-48" : "ml-0"}`}>
           <div className="flex items-center justify-center min-h-[60vh] pb-24 md:pb-0">
             <div className="text-center p-8 max-w-md">
@@ -97,8 +97,8 @@ const AgentPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <MovieBoxHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
-      <MovieBoxSidebar isOpen={sidebarOpen} />
+      <LuoFilmHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+      <LuoFilmSidebar isOpen={sidebarOpen} />
       <main className={`pt-14 transition-all duration-300 ${sidebarOpen && !isMobile ? "ml-48" : "ml-0"}`}>
         <div className="p-4 md:p-6 pb-24 md:pb-6">
           <div className="flex items-center gap-3 mb-6">

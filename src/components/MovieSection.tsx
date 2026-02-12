@@ -66,7 +66,7 @@ const MovieSection = ({ title, movies }: MovieSectionProps) => {
           className="flex gap-2 md:gap-3 overflow-x-auto scrollbar-hide pb-2"
         >
           {movies.map((movie) => (
-            <div key={movie.id} className="flex-shrink-0 w-[calc(25%-6px)] sm:w-[calc(20%-8px)] md:w-[calc(16.66%-10px)] lg:w-[calc(14.28%-10px)]">
+            <div key={movie.id} className="flex-shrink-0 w-[calc(33.33%-6px)] sm:w-[calc(25%-6px)] md:w-[calc(20%-8px)] lg:w-[calc(14.28%-10px)]">
               <MovieCard movie={movie} />
             </div>
           ))}
