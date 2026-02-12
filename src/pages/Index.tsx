@@ -31,6 +31,7 @@ const Index = () => {
   }, [isMobile]);
 
   const welcomeImage = localStorage.getItem("welcome_image") || "https://i.postimg.cc/T2khf7dN/purple-pink-color-triangle-logo-1273375-228-removebg-preview.png";
+  const welcomeMessage = localStorage.getItem("welcome_message") || "Experience cinema like never before. High quality luo translated movies and live TV on any device.";
   const ctaText = localStorage.getItem("welcome_cta_text") || "Get Started";
   const ctaLink = localStorage.getItem("welcome_cta_link") || "/movies";
 
@@ -88,7 +89,7 @@ const Index = () => {
               </div>
               <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-center text-center md:text-left bg-card">
                 <h2 className="text-2xl font-black text-foreground mb-3 tracking-tight">LUO FILM</h2>
-                <p className="text-muted-foreground mb-6 text-sm font-medium leading-relaxed">Experience cinema like never before. High quality luo translated movies and live TV on any device.</p>
+                <p className="text-muted-foreground mb-6 text-sm font-medium leading-relaxed">{welcomeMessage}</p>
                 <Button 
                   onClick={() => {
                     setShowWelcome(false);
@@ -137,19 +138,19 @@ const Index = () => {
 
           <div className="mt-6 md:mt-8">
             {publishedSeries.length > 0 && (
-              <MovieSection title="Popular Series" movies={publishedSeries} />
+              <MovieSection title="Popular Series" movies={publishedSeries} moreLink="/tv-shows" />
             )}
             {trendingMovies.length > 0 && (
-              <MovieSection title="Trending Movies" movies={trendingMovies} />
+              <MovieSection title="Trending Movies" movies={trendingMovies} moreLink="/movies" />
             )}
             {actionMovies.length > 0 && (
-              <MovieSection title="Action" movies={actionMovies} />
+              <MovieSection title="Action" movies={actionMovies} moreLink="/movies" />
             )}
             {animationMovies.length > 0 && (
-              <MovieSection title="Animation" movies={animationMovies} />
+              <MovieSection title="Animation" movies={animationMovies} moreLink="/movies" />
             )}
             {mostWatched.length > 0 && (
-              <MovieSection title="Most Watched" movies={mostWatched} />
+              <MovieSection title="Most Watched" movies={mostWatched} moreLink="/movies" />
             )}
           </div>
         </div>
