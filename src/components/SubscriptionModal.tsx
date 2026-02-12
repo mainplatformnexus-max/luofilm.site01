@@ -1,14 +1,15 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { normalPlans, agentPlans, formatUGX, SubscriptionPlan } from "@/data/subscriptions";
-import { Check, Crown, Zap, X } from "lucide-react";
-import { useState } from "react";
+import { Check, Crown, Zap, X, ShieldCheck, UserCheck } from "lucide-react";
+import { useState, useEffect } from "react";
 
 interface SubscriptionModalProps {
   isOpen: boolean;
   onClose: () => void;
+  defaultPlan?: "normal" | "agent";
 }
 
-const SubscriptionModal = ({ isOpen, onClose }: SubscriptionModalProps) => {
+const SubscriptionModal = ({ isOpen, onClose, defaultPlan }: SubscriptionModalProps) => {
   const { subscription, subscribe } = useAuth();
   const [selectedTab, setSelectedTab] = useState<"normal" | "agent">("normal");
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(null);
@@ -16,6 +17,12 @@ const SubscriptionModal = ({ isOpen, onClose }: SubscriptionModalProps) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [loading, setLoading] = useState(false);
   const [paymentError, setPaymentError] = useState("");
+
+  useEffect(() => {
+    if (defaultPlan) {
+      setSelectedTab(defaultPlan);
+    }
+  }, [defaultPlan, isOpen]);
 
   if (!isOpen) return null;
 
@@ -166,45 +173,70 @@ const SubscriptionModal = ({ isOpen, onClose }: SubscriptionModalProps) => {
 
               {/* Plans Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {plans.map((plan) => (
-                  <div
-                    key={plan.id}
-                    className={`relative p-6 rounded-2xl border transition-all ${
-                      plan.plan === "agent"
-                        ? "border-amber-400/30 bg-amber-400/5 hover:border-amber-400/50"
-                        : "border-border hover:border-primary/50"
-                    }`}
-                  >
-                    {plan.plan === "agent" && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full gradient-primary text-[10px] font-bold text-white uppercase tracking-wider">
-                        Popular
-                      </div>
-                    )}
-                    <div className="mb-4">
-                      <h3 className="text-lg font-bold text-foreground">{plan.label}</h3>
-                      <div className="mt-2 flex items-baseline gap-1">
-                        <span className="text-2xl font-bold text-foreground">
-                          {formatUGX(plan.price)}
-                        </span>
-                        <span className="text-xs text-muted-foreground">/{plan.duration.replace("1", "")}</span>
-                      </div>
-                    </div>
-                    <ul className="space-y-3 mb-8">
-                      {plan.features.map((feature, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                          <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <button
-                      onClick={() => handleStartPayment(plan)}
-                      className="w-full py-2.5 rounded-xl gradient-primary text-white font-semibold text-sm hover:opacity-90 transition-opacity"
+                {plans.map((plan) => {
+                  const isBalanced = plan.label === "Balanced";
+                  const isSquare = plan.label === "Square";
+                  const isClassic = plan.label === "Classic";
+                  const isAgent = plan.plan === "agent";
+                  
+                  return (
+                    <div
+                      key={plan.id}
+                      className={`relative flex flex-col p-6 rounded-2xl border-2 transition-all duration-300 cursor-pointer ${
+                        selectedPlan?.id === plan.id
+                          ? "border-primary bg-primary/5 scale-105 shadow-xl shadow-primary/10"
+                          : isAgent 
+                            ? "border-amber-400/30 bg-amber-400/5 hover:border-amber-400/50" 
+                            : "border-border hover:border-primary/30"
+                      }`}
+                      onClick={() => setSelectedPlan(plan)}
                     >
-                      Subscribe
-                    </button>
-                  </div>
-                ))}
+                      {(isBalanced || isAgent) && (
+                        <div className={`absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[10px] font-bold text-white uppercase tracking-wider ${isAgent ? 'bg-amber-500' : 'gradient-primary'}`}>
+                          {isAgent ? 'Professional' : 'Popular'}
+                        </div>
+                      )}
+                      
+                      <div className="mb-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          {isClassic && <Zap className="w-5 h-5 text-blue-500" />}
+                          {isSquare && <ShieldCheck className="w-5 h-5 text-purple-500" />}
+                          {isBalanced && <Crown className="w-5 h-5 text-primary" />}
+                          {isAgent && <UserCheck className="w-5 h-5 text-amber-500" />}
+                          <h3 className="text-lg font-bold text-foreground">{plan.label}</h3>
+                        </div>
+                        <div className="mt-2 flex items-baseline gap-1">
+                          <span className="text-2xl font-bold text-foreground">
+                            {formatUGX(plan.price)}
+                          </span>
+                          <span className="text-xs text-muted-foreground">/{plan.duration.replace("1", "")}</span>
+                        </div>
+                      </div>
+                      
+                      <ul className="space-y-3 mb-8 flex-1">
+                        {plan.features.map((feature, i) => (
+                          <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                            <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                            <span className="leading-tight">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleStartPayment(plan);
+                        }}
+                        className={`w-full py-3 rounded-xl font-bold text-sm transition-all ${
+                          selectedPlan?.id === plan.id 
+                            ? "gradient-primary text-white shadow-lg shadow-primary/20" 
+                            : "bg-secondary text-foreground hover:bg-primary hover:text-white"
+                        }`}
+                      >
+                        Subscribe
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             </>
           ) : (

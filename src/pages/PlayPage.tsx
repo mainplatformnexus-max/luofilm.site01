@@ -307,6 +307,7 @@ const PlayPage = () => {
       <SubscriptionModal 
         isOpen={showSubscriptionModal} 
         onClose={() => setShowSubscriptionModal(false)} 
+        defaultPlan={needsAgent ? "agent" : "normal"}
       />
       <LoginModal 
         isOpen={showLoginModal} 
