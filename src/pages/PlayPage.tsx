@@ -4,6 +4,8 @@ import { useMovies } from "@/contexts/MovieContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { ArrowLeft, Lock } from "lucide-react";
 import Artplayer from "artplayer";
+import Hls from "hls.js";
+import dashjs from "dashjs";
 import SubscriptionModal from "@/components/SubscriptionModal";
 import LoginModal from "@/components/LoginModal";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -35,8 +37,7 @@ const PlayPage = () => {
 
   // Check access
   const needsAgent = content?.isAgent && !content?.isPublished;
-  const needsSubscription = !needsAgent && !hasNormalAccess;
-  const isLocked = needsAgent ? !hasAgentAccess : needsSubscription;
+  const isLocked = needsAgent ? !hasAgentAccess : !hasNormalAccess;
 
   const isSeries = content?.type === "series" || contentEpisodes.length > 0;
 
@@ -64,7 +65,7 @@ const PlayPage = () => {
   }, [isSeries, selectedEpisode, contentEpisodes]);
 
   useEffect(() => {
-    if (!artRef.current || !content || isLocked) return;
+    if (!artRef.current || !content) return;
 
     setPlayerError(null);
 
@@ -80,7 +81,7 @@ const PlayPage = () => {
       poster: content.poster || "",
       volume: 0.5,
       muted: false,
-      autoplay: false,
+      autoplay: isLocked ? false : false, // We'll keep it false regardless but context is clear
       pip: true,
       autoSize: false,
       autoMini: true,
@@ -103,6 +104,21 @@ const PlayPage = () => {
       lock: true,
       moreVideoAttr: {
         crossOrigin: "anonymous",
+      },
+      customType: {
+        m3u8: function (video, url) {
+          if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(url);
+            hls.attachMedia(video);
+          } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+            video.src = url;
+          }
+        },
+        mpd: function (video, url) {
+          const player = dashjs.MediaPlayer().create();
+          player.initialize(video, url, true);
+        },
       },
       settings: [
         {
@@ -146,6 +162,12 @@ const PlayPage = () => {
       }
     };
   }, [content, isLocked, activeVideoUrl]);
+
+  useEffect(() => {
+    if (!isLocked && artInstance.current) {
+      artInstance.current.play().catch(() => {});
+    }
+  }, [isLocked]);
 
   if (loading) {
     return (
@@ -205,29 +227,32 @@ const PlayPage = () => {
           {/* Player area - smaller */}
           <div className="lg:flex-1 lg:max-w-[65%]">
             {isLocked ? (
-              <div className="aspect-video flex items-center justify-center bg-card rounded-xl">
-                <div className="text-center p-6">
-                  <Lock className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-                  <h2 className="text-lg font-bold text-foreground mb-2">
-                    {needsAgent ? "Agent Access Required" : "Subscription Required"}
-                  </h2>
-                  <p className="text-sm text-muted-foreground mb-4 max-w-sm">
-                    {needsAgent
-                      ? "This content is available exclusively to Agent subscribers."
-                      : "Subscribe to MovieBox to watch this content."}
-                  </p>
-                  <button
-                    onClick={() => {
-                      if (!isAuthenticated) {
-                        setShowLoginModal(true);
-                      } else {
-                        setShowSubscriptionModal(true);
-                      }
-                    }}
-                    className="px-5 py-2 rounded-lg gradient-primary text-primary-foreground font-semibold text-sm hover:opacity-90 transition-opacity"
-                  >
-                    {!isAuthenticated ? "Login to Subscribe" : needsAgent ? "Get Agent Plan" : "Subscribe Now"}
-                  </button>
+              <div className="aspect-video relative group bg-card rounded-xl overflow-hidden">
+                <div ref={artRef} className="absolute inset-0 opacity-40 blur-sm grayscale" />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                  <div className="text-center p-6 bg-background/80 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl">
+                    <Lock className="w-10 h-10 text-primary mx-auto mb-3" />
+                    <h2 className="text-lg font-bold text-foreground mb-2">
+                      {needsAgent ? "Agent Access Required" : "Subscription Required"}
+                    </h2>
+                    <p className="text-sm text-muted-foreground mb-4 max-w-sm">
+                      {needsAgent
+                        ? "This content is available exclusively to Agent subscribers."
+                        : "Subscribe to MovieBox to watch this content."}
+                    </p>
+                    <button
+                      onClick={() => {
+                        if (!isAuthenticated) {
+                          setShowLoginModal(true);
+                        } else {
+                          setShowSubscriptionModal(true);
+                        }
+                      }}
+                      className="px-8 py-2.5 rounded-xl bg-primary text-primary-foreground font-bold text-sm hover:scale-105 transition-transform"
+                    >
+                      {!isAuthenticated ? "Login to Subscribe" : needsAgent ? "Get Agent Plan" : "Subscribe Now"}
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : (
