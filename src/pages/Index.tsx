@@ -75,25 +75,26 @@ const Index = () => {
       {/* Welcome Popup */}
       {showWelcome && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-500">
-          <div className="relative max-w-lg w-full bg-card rounded-3xl overflow-hidden shadow-2xl border border-white/10 group">
+          <div className="relative max-w-2xl w-full bg-card rounded-2xl overflow-hidden shadow-2xl border border-white/10 group">
             <button 
               onClick={() => setShowWelcome(false)}
               className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/80 rounded-full text-white transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
-            <div className="aspect-[4/5] relative">
-              <img src={welcomeImage} alt="Welcome" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-              <div className="absolute bottom-0 inset-x-0 p-8 text-center">
-                <h2 className="text-3xl font-black text-white mb-4 tracking-tight">Welcome to MovieBox</h2>
-                <p className="text-gray-300 mb-8 text-lg font-medium">Experience cinema like never before. High quality streaming on any device.</p>
+            <div className="flex flex-col md:flex-row h-full md:h-80">
+              <div className="w-full md:w-1/2 h-48 md:h-full">
+                <img src={welcomeImage} alt="Welcome" className="w-full h-full object-cover" />
+              </div>
+              <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-center text-center md:text-left bg-card">
+                <h2 className="text-2xl font-black text-foreground mb-3 tracking-tight">LUO FILM</h2>
+                <p className="text-muted-foreground mb-6 text-sm font-medium leading-relaxed">Experience cinema like never before. High quality luo translated movies and live TV on any device.</p>
                 <Button 
                   onClick={() => {
                     setShowWelcome(false);
                     navigate(ctaLink);
                   }}
-                  className="w-full py-7 text-xl font-bold rounded-2xl bg-primary hover:scale-105 transition-transform shadow-xl shadow-primary/20"
+                  className="w-full py-6 text-lg font-bold rounded-xl bg-primary hover:scale-105 transition-transform shadow-lg shadow-primary/20"
                 >
                   {ctaText}
                 </Button>
