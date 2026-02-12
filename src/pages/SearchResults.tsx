@@ -43,8 +43,12 @@ const SearchResults = () => {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center min-h-[40vh]">
-              <Search className="w-12 h-12 text-muted-foreground mb-4" />
-              <p className="text-foreground text-lg mb-1">No results found</p>
+              <img 
+                src="https://i.postimg.cc/T2khf7dN/purple-pink-color-triangle-logo-1273375-228-removebg-preview.png" 
+                alt="Luo Film" 
+                className="w-20 h-20 mb-6 object-contain opacity-50 grayscale"
+              />
+              <p className="text-foreground text-lg mb-1 font-bold">No results found</p>
               <p className="text-muted-foreground text-sm">Try searching for something else</p>
             </div>
           )}

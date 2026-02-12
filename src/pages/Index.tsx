@@ -30,7 +30,7 @@ const Index = () => {
     }
   }, [isMobile]);
 
-  const welcomeImage = localStorage.getItem("welcome_image") || "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?auto=format&fit=crop&q=80&w=1200";
+  const welcomeImage = localStorage.getItem("welcome_image") || "https://i.postimg.cc/T2khf7dN/purple-pink-color-triangle-logo-1273375-228-removebg-preview.png";
   const ctaText = localStorage.getItem("welcome_cta_text") || "Get Started";
   const ctaLink = localStorage.getItem("welcome_cta_link") || "/movies";
 

@@ -50,9 +50,12 @@ const LuoFilmSidebar = ({ isOpen }: LuoFilmSidebarProps) => {
         })}
       </nav>
 
-      <div className="p-3 mt-4 border-t border-sidebar-border">
-        <p className="text-xs text-muted-foreground px-3 mt-3">
-          luofilm.ug@luofilm.ug
+      <div className="p-3 mt-4 border-t border-sidebar-border space-y-1">
+        <p className="text-[10px] text-muted-foreground px-3">
+          support@luofilm.site
+        </p>
+        <p className="text-[10px] text-muted-foreground px-3">
+          0760734679 | 0789816447
         </p>
       </div>
     </aside>
