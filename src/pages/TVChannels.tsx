@@ -66,7 +66,18 @@ const TVChannels = () => {
           const player = dashjs.MediaPlayer().create();
           player.initialize(video, url, true);
         },
+        // Handle custom dash extension if needed or generic application/dash+xml
+        'application/dash+xml': function (video, url) {
+          const player = dashjs.MediaPlayer().create();
+          player.initialize(video, url, true);
+        },
       },
+    }, (art) => {
+      // Ensure dashjs works with proxy URLs that might not have .mpd extension
+      if (videoUrl.includes('manifest.mpd') || videoUrl.includes('video-proxy')) {
+        const player = dashjs.MediaPlayer().create();
+        player.initialize(art.video, videoUrl, true);
+      }
     });
 
     return () => {

@@ -119,6 +119,11 @@ const PlayPage = () => {
           const player = dashjs.MediaPlayer().create();
           player.initialize(video, url, true);
         },
+        // Handle custom dash extension if needed or generic application/dash+xml
+        'application/dash+xml': function (video, url) {
+          const player = dashjs.MediaPlayer().create();
+          player.initialize(video, url, true);
+        },
       },
       settings: [
         {
@@ -140,6 +145,12 @@ const PlayPage = () => {
           },
         },
       ],
+    }, (art) => {
+      // Ensure dashjs works with proxy URLs that might not have .mpd extension
+      if (videoUrl.includes('manifest.mpd') || videoUrl.includes('video-proxy')) {
+        const player = dashjs.MediaPlayer().create();
+        player.initialize(art.video, videoUrl, true);
+      }
     });
 
     // Hide reconnect notice
@@ -263,9 +274,7 @@ const PlayPage = () => {
                   <p className="mt-2 text-sm text-muted-foreground">{playerError}</p>
                 )}
 
-                {isSeries && (
-                  <PlayerActions title={content.title} url={activeVideoUrl} />
-                )}
+                <PlayerActions title={content.title} url={activeVideoUrl} />
               </>
             )}
           </div>
