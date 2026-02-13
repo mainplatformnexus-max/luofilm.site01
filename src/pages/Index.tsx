@@ -37,8 +37,10 @@ const Index = () => {
     }
   }, [isMobile]);
 
+  // Use a fallback for the welcome image that isn't just local storage
   const welcomeImage = localStorage.getItem("welcome_image") || "https://i.postimg.cc/T2khf7dN/purple-pink-color-triangle-logo-1273375-228-removebg-preview.png";
   const ctaLink = localStorage.getItem("welcome_cta_link") || "/movies";
+  const welcomeMessage = localStorage.getItem("welcome_message") || localStorage.getItem("welcome_message_fallback") || "";
 
   useEffect(() => {
     if (isMobile) {
@@ -86,6 +88,11 @@ const Index = () => {
             </button>
             <div className="relative aspect-video">
               <img src={welcomeImage} alt="Welcome" className="w-full h-full object-cover rounded-2xl" />
+              {welcomeMessage && (
+                <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none p-6">
+                  <h2 className="text-3xl md:text-4xl font-extrabold text-white text-center drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] leading-tight uppercase tracking-wider">{welcomeMessage}</h2>
+                </div>
+              )}
               <div className="absolute inset-0 flex items-end justify-start p-6 bg-transparent">
                 <Button 
                   onClick={() => {

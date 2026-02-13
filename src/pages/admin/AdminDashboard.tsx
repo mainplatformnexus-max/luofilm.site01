@@ -17,6 +17,7 @@ const AdminDashboard = () => {
 
   const handleSaveWelcome = () => {
     localStorage.setItem("welcome_message", welcomeMessage);
+    localStorage.setItem("welcome_message_fallback", welcomeMessage);
     localStorage.setItem("welcome_image", welcomeImage);
     localStorage.setItem("welcome_cta_text", ctaText);
     localStorage.setItem("welcome_cta_link", ctaLink);
