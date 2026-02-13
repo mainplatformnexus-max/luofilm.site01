@@ -3,17 +3,13 @@ import LuoFilmHeader from "@/components/MovieBoxHeader";
 import LuoFilmSidebar from "@/components/MovieBoxSidebar";
 import HeroCarousel from "@/components/HeroCarousel";
 import MovieSection from "@/components/MovieSection";
+
 import { useMovies } from "@/contexts/MovieContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { X, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { UserSimulator } from "@/components/UserSimulator";
-
-const Index = () => {
-  const isMobile = useIsMobile();
-  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { movies, series } = useMovies();
   const { user } = useAuth();
@@ -135,33 +131,6 @@ const Index = () => {
           <HeroCarousel />
 
           <div className="mt-6 md:mt-8 space-y-8">
-            {!user && (
-              <div className="py-8 border-y border-border/50">
-                <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-8">
-                  <div className="flex-1 space-y-4 text-center md:text-left">
-                    <h2 className="text-2xl font-bold tracking-tight">How it works</h2>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      Getting started is easy. Watch our step-by-step simulator to see how you can login, subscribe to our premium plans, and start downloading your favorite content for offline viewing.
-                    </p>
-                    <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-                      <div className="flex items-center gap-2 text-xs font-medium">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary" /> Login securely
-                      </div>
-                      <div className="flex items-center gap-2 text-xs font-medium">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary" /> Flexible plans
-                      </div>
-                      <div className="flex items-center gap-2 text-xs font-medium">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary" /> Offline downloads
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex-1 w-full max-w-sm">
-                    <UserSimulator />
-                  </div>
-                </div>
-              </div>
-            )}
-
             {publishedSeries.length > 0 && (
               <MovieSection title="Popular Series" movies={publishedSeries} moreLink="/tv-shows" />
             )}

@@ -1,6 +1,6 @@
 import { useMovies } from "@/contexts/MovieContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { Film, Tv, Users, CreditCard, TrendingUp, MonitorPlay, Image as ImageIcon, ExternalLink } from "lucide-react";
+import { Film, Tv, Users, CreditCard, TrendingUp, MonitorPlay, Image as ImageIcon, ExternalLink, Activity, Eye, Download, MousePointerClick } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 const AdminDashboard = () => {
   const { movies, series, episodes, heroSlides, tvChannels } = useMovies();
-  const { allUsers, allSubscriptions } = useAuth();
+  const { allUsers, allSubscriptions, allActivities } = useAuth();
   const [welcomeMessage, setWelcomeMessage] = useState(localStorage.getItem("welcome_message") || "");
   const [welcomeImage, setWelcomeImage] = useState(localStorage.getItem("welcome_image") || "");
   const [ctaText, setCtaText] = useState(localStorage.getItem("welcome_cta_text") || "Get Started");
@@ -29,7 +29,7 @@ const AdminDashboard = () => {
     { label: "TV Channels", value: tvChannels.length, icon: MonitorPlay, color: "text-primary" },
     { label: "Total Users", value: allUsers.length, icon: Users, color: "text-primary" },
     { label: "Active Subs", value: allSubscriptions.filter((s) => s.status === "active").length, icon: CreditCard, color: "text-accent" },
-    { label: "Episodes", value: episodes.length, icon: TrendingUp, color: "text-primary" },
+    { label: "User Activities", value: allActivities.length, icon: Activity, color: "text-primary" },
   ];
 
   return (
@@ -51,6 +51,50 @@ const AdminDashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+        <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-6">
+            <Activity className="w-5 h-5 text-primary" />
+            <h3 className="font-bold text-lg text-foreground">Recent User Activity</h3>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left p-2 text-muted-foreground">User</th>
+                  <th className="text-left p-2 text-muted-foreground">Action</th>
+                  <th className="text-left p-2 text-muted-foreground">Item</th>
+                  <th className="text-right p-2 text-muted-foreground">Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {allActivities.slice(-15).reverse().map((act) => {
+                  const user = allUsers.find(u => u.id === act.userId);
+                  const Icon = act.type === "watch" ? Eye : act.type === "download" ? Download : MousePointerClick;
+                  return (
+                    <tr key={act.id} className="border-b border-border/50 hover:bg-secondary/20">
+                      <td className="p-2">
+                        <p className="font-medium text-foreground">{user?.name || "Unknown"}</p>
+                        <p className="text-[10px] text-muted-foreground">{user?.email}</p>
+                      </td>
+                      <td className="p-2">
+                        <div className="flex items-center gap-1.5">
+                          <Icon className="w-3.5 h-3.5 text-primary" />
+                          <span className="capitalize">{act.type}</span>
+                        </div>
+                      </td>
+                      <td className="p-2 text-muted-foreground">{act.itemTitle}</td>
+                      <td className="p-2 text-right text-xs text-muted-foreground">
+                        {new Date(act.timestamp).toLocaleString()}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            {allActivities.length === 0 && <p className="text-center py-4 text-muted-foreground">No activity recorded yet</p>}
+          </div>
+        </div>
+      </div>
         <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-6">
             <ImageIcon className="w-5 h-5 text-primary" />

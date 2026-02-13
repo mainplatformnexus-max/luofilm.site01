@@ -10,6 +10,15 @@ import {
 } from "firebase/auth";
 import { ref, set, get, onValue, remove, update } from "firebase/database";
 
+export interface UserActivity {
+  id: string;
+  userId: string;
+  type: "watch" | "download" | "click";
+  itemId: string;
+  itemTitle: string;
+  timestamp: string;
+}
+
 export interface User {
   id: string;
   email: string;
@@ -43,6 +52,8 @@ interface AuthContextType {
   subscribe: (plan: "normal" | "agent", duration: "1day" | "1week" | "1month") => void;
   allUsers: User[];
   allSubscriptions: Subscription[];
+  allActivities: UserActivity[];
+  trackActivity: (type: "watch" | "download" | "click", itemId: string, itemTitle: string) => void;
   updateUser: (userId: string, updates: Partial<User>) => void;
   deleteUser: (userId: string) => void;
   updateSubscription: (subId: string, updates: Partial<Subscription>) => void;
@@ -67,6 +78,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [allSubscriptions, setAllSubscriptions] = useState<Subscription[]>([]);
+  const [allActivities, setAllActivities] = useState<UserActivity[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Listen to auth state changes
@@ -123,6 +135,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setAllUsers(usersList);
       } else {
         setAllUsers([]);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [user?.role]);
+
+  // Listen to all activities (admin only)
+  useEffect(() => {
+    if (user?.role !== "admin") return;
+
+    const activitiesRef = ref(database, "activities");
+    const unsubscribe = onValue(activitiesRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const activitiesData = snapshot.val();
+        const activitiesList = Object.keys(activitiesData).map((key) => ({
+          ...activitiesData[key],
+          id: key,
+        }));
+        setAllActivities(activitiesList);
+      } else {
+        setAllActivities([]);
       }
     });
 
@@ -226,6 +259,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const trackActivity = async (type: "watch" | "download" | "click", itemId: string, itemTitle: string) => {
+    if (!user) return;
+    const activityId = `act-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const newActivity: UserActivity = {
+      id: activityId,
+      userId: user.id,
+      type,
+      itemId,
+      itemTitle,
+      timestamp: new Date().toISOString(),
+    };
+    await set(ref(database, `activities/${activityId}`), newActivity);
+  };
+
   const subscribe = async (plan: "normal" | "agent", duration: "1day" | "1week" | "1month") => {
     if (!user) return;
     
@@ -296,6 +343,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         subscribe,
         allUsers,
         allSubscriptions,
+        allActivities,
+        trackActivity,
         updateUser,
         deleteUser,
         updateSubscription,
