@@ -343,11 +343,12 @@ const PlayPage = () => {
 
         {/* Related content - grid under player */}
         {relatedContent.length > 0 && (
-          <div className="mt-8">
-            <h3 className="text-xl font-bold text-foreground mb-6">
+          <div className="mt-8 border-t border-border pt-8">
+            <h3 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
+              <span className="w-1 h-6 bg-primary rounded-full"></span>
               {content.type === "series" ? "Related Series" : "Related Movies"}
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-4">
               {relatedContent.map((item) => (
                 <MovieCard key={item.id} movie={item} />
               ))}

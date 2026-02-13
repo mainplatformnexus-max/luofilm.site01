@@ -24,6 +24,11 @@ const Index = () => {
     if (!hasSeenWelcome) {
       setShowWelcome(true);
       sessionStorage.setItem("hasSeenWelcome", "true");
+      // Auto-exit after 5 seconds
+      const timer = setTimeout(() => {
+        setShowWelcome(false);
+      }, 5000);
+      return () => clearTimeout(timer);
     }
 
     const hasSeenAppPromo = localStorage.getItem("hasSeenAppPromo");
@@ -33,8 +38,6 @@ const Index = () => {
   }, [isMobile]);
 
   const welcomeImage = localStorage.getItem("welcome_image") || "https://i.postimg.cc/T2khf7dN/purple-pink-color-triangle-logo-1273375-228-removebg-preview.png";
-  const welcomeMessage = localStorage.getItem("welcome_message") || "Experience cinema like never before. High quality luo translated movies and live TV on any device.";
-  const ctaText = localStorage.getItem("welcome_cta_text") || "Get Started";
   const ctaLink = localStorage.getItem("welcome_cta_link") || "/movies";
 
   useEffect(() => {
@@ -74,28 +77,24 @@ const Index = () => {
 
       {showWelcome && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-500">
-          <div className="relative max-w-2xl w-full bg-card rounded-2xl overflow-hidden shadow-2xl border border-white/10 group">
+          <div className="relative max-w-lg w-full rounded-2xl overflow-hidden shadow-2xl border border-white/10 group bg-transparent">
             <button 
               onClick={() => setShowWelcome(false)}
-              className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/80 rounded-full text-white transition-colors"
+              className="absolute top-4 right-4 z-20 p-2 bg-black/50 hover:bg-black/80 rounded-full text-white transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
-            <div className="flex flex-col md:flex-row h-full md:h-80">
-              <div className="w-full md:w-1/2 h-48 md:h-full">
-                <img src={welcomeImage} alt="Welcome" className="w-full h-full object-cover" />
-              </div>
-              <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-center text-center md:text-left bg-card">
-                <h2 className="text-2xl font-black text-foreground mb-3 tracking-tight">LUO FILM</h2>
-                <p className="text-muted-foreground mb-6 text-sm font-medium leading-relaxed">{welcomeMessage}</p>
+            <div className="relative aspect-video">
+              <img src={welcomeImage} alt="Welcome" className="w-full h-full object-cover rounded-2xl" />
+              <div className="absolute inset-0 flex items-end justify-center p-6 bg-gradient-to-t from-black/80 to-transparent">
                 <Button 
                   onClick={() => {
                     setShowWelcome(false);
                     navigate(ctaLink);
                   }}
-                  className="w-full py-6 text-lg font-bold rounded-xl bg-primary hover:scale-105 transition-transform shadow-lg shadow-primary/20"
+                  className="w-full md:w-auto px-10 py-6 text-lg font-bold rounded-xl bg-primary hover:scale-105 transition-transform shadow-lg shadow-primary/20"
                 >
-                  {ctaText}
+                  {localStorage.getItem("welcome_cta_text") || "Explore Now"}
                 </Button>
               </div>
             </div>
