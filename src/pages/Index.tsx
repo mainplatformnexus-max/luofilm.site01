@@ -24,10 +24,10 @@ const Index = () => {
     if (!hasSeenWelcome) {
       setShowWelcome(true);
       sessionStorage.setItem("hasSeenWelcome", "true");
-      // Auto-exit after 5 seconds
+      // Auto-exit after 15 seconds
       const timer = setTimeout(() => {
         setShowWelcome(false);
-      }, 5000);
+      }, 15000);
       return () => clearTimeout(timer);
     }
 
@@ -76,7 +76,7 @@ const Index = () => {
       <LuoFilmSidebar isOpen={sidebarOpen} />
 
       {showWelcome && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-500">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-none animate-in fade-in duration-500">
           <div className="relative max-w-lg w-full rounded-2xl overflow-hidden shadow-2xl border border-white/10 group bg-transparent">
             <button 
               onClick={() => setShowWelcome(false)}
@@ -86,13 +86,14 @@ const Index = () => {
             </button>
             <div className="relative aspect-video">
               <img src={welcomeImage} alt="Welcome" className="w-full h-full object-cover rounded-2xl" />
-              <div className="absolute inset-0 flex items-end justify-center p-6 bg-gradient-to-t from-black/80 to-transparent">
+              <div className="absolute inset-0 flex items-end justify-start p-6 bg-transparent">
                 <Button 
                   onClick={() => {
                     setShowWelcome(false);
                     navigate(ctaLink);
                   }}
-                  className="w-full md:w-auto px-10 py-6 text-lg font-bold rounded-xl bg-primary hover:scale-105 transition-transform shadow-lg shadow-primary/20"
+                  size="sm"
+                  className="px-4 py-2 text-sm font-bold rounded-lg bg-primary hover:scale-105 transition-transform shadow-lg shadow-primary/20"
                 >
                   {localStorage.getItem("welcome_cta_text") || "Explore Now"}
                 </Button>
