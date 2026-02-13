@@ -4,16 +4,19 @@ import LuoFilmSidebar from "@/components/MovieBoxSidebar";
 import HeroCarousel from "@/components/HeroCarousel";
 import MovieSection from "@/components/MovieSection";
 import { useMovies } from "@/contexts/MovieContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { X, Download, Smartphone } from "lucide-react";
+import { X, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { UserSimulator } from "@/components/UserSimulator";
 
 const Index = () => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { movies, series } = useMovies();
+  const { user } = useAuth();
   const [showWelcome, setShowWelcome] = useState(false);
   const [showAppPromo, setShowAppPromo] = useState(false);
 
@@ -44,7 +47,6 @@ const Index = () => {
   }, [isMobile]);
 
   const handleInstallApp = async () => {
-    // Basic PWA install trigger logic
     const deferredPrompt = (window as any).deferredPrompt;
     if (deferredPrompt) {
       deferredPrompt.prompt();
@@ -54,7 +56,6 @@ const Index = () => {
         localStorage.setItem("hasSeenAppPromo", "true");
       }
     } else {
-      // Fallback for devices where prompt isn't ready
       alert("To install: Tap the share button and select 'Add to Home Screen'");
     }
   };
@@ -62,7 +63,6 @@ const Index = () => {
   const publishedMovies = movies.filter((m) => m.isPublished !== false && !m.isAgent);
   const publishedSeries = series.filter((s) => s.isPublished !== false);
 
-  // Group movies by genre
   const trendingMovies = publishedMovies.slice(0, 10);
   const actionMovies = publishedMovies.filter((m) => m.genre?.includes("Action")).slice(0, 10);
   const animationMovies = publishedMovies.filter((m) => m.genre?.includes("Animation")).slice(0, 10);
@@ -73,7 +73,6 @@ const Index = () => {
       <LuoFilmHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
       <LuoFilmSidebar isOpen={sidebarOpen} />
 
-      {/* Welcome Popup */}
       {showWelcome && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-500">
           <div className="relative max-w-2xl w-full bg-card rounded-2xl overflow-hidden shadow-2xl border border-white/10 group">
@@ -105,7 +104,6 @@ const Index = () => {
         </div>
       )}
 
-      {/* App Download Message */}
       {showAppPromo && (
         <div className="fixed top-16 inset-x-4 z-50 flex items-center justify-between p-4 bg-primary text-primary-foreground rounded-2xl shadow-2xl animate-in slide-in-from-top-full duration-500">
           <div className="flex items-center gap-3">
@@ -136,7 +134,34 @@ const Index = () => {
         <div className="p-4 md:p-6">
           <HeroCarousel />
 
-          <div className="mt-6 md:mt-8">
+          <div className="mt-6 md:mt-8 space-y-8">
+            {!user && (
+              <div className="py-8 border-y border-border/50">
+                <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-8">
+                  <div className="flex-1 space-y-4 text-center md:text-left">
+                    <h2 className="text-2xl font-bold tracking-tight">How it works</h2>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      Getting started is easy. Watch our step-by-step simulator to see how you can login, subscribe to our premium plans, and start downloading your favorite content for offline viewing.
+                    </p>
+                    <div className="flex flex-wrap gap-3 justify-center md:justify-start">
+                      <div className="flex items-center gap-2 text-xs font-medium">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary" /> Login securely
+                      </div>
+                      <div className="flex items-center gap-2 text-xs font-medium">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary" /> Flexible plans
+                      </div>
+                      <div className="flex items-center gap-2 text-xs font-medium">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary" /> Offline downloads
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex-1 w-full max-w-sm">
+                    <UserSimulator />
+                  </div>
+                </div>
+              </div>
+            )}
+
             {publishedSeries.length > 0 && (
               <MovieSection title="Popular Series" movies={publishedSeries} moreLink="/tv-shows" />
             )}
