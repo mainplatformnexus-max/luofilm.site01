@@ -1,18 +1,32 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { Trash2, Shield, ShieldOff, CreditCard } from "lucide-react";
+import { Trash2, Shield, ShieldOff, CreditCard, ChevronDown } from "lucide-react";
+import { useState } from "react";
+import { normalPlans, agentPlans } from "@/data/subscriptions";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const AdminUsers = () => {
   const { allUsers, updateUser, deleteUser, adminSubscribeForUser } = useAuth();
+  const [loading, setLoading] = useState<string | null>(null);
 
-  const handleManualSubscription = async (userId: string) => {
+  const handleManualSubscription = async (userId: string, planType: "normal" | "agent", duration: "1day" | "1week" | "1month") => {
     try {
-      await adminSubscribeForUser(userId, "normal", "1month");
-      alert("Subscription activated successfully for 1 month!");
+      setLoading(userId);
+      await adminSubscribeForUser(userId, planType, duration);
+      alert(`Subscription activated successfully for ${duration}!`);
     } catch (error) {
       console.error("Error activating subscription:", error);
       alert("Failed to activate subscription.");
+    } finally {
+      setLoading(null);
     }
   };
+
+  const allAvailablePlans = [...normalPlans, ...agentPlans];
 
   return (
     <div>
@@ -44,13 +58,33 @@ const AdminUsers = () => {
                   </td>
                   <td className="p-3">
                     <div className="flex items-center justify-end gap-1">
-                      <button
-                        onClick={() => handleManualSubscription(u.id)}
-                        className="p-1.5 rounded hover:bg-secondary text-green-500"
-                        title="Activate Subscription"
-                      >
-                        <CreditCard className="w-4 h-4" />
-                      </button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button
+                            disabled={loading === u.id}
+                            className="p-1.5 rounded hover:bg-secondary text-green-500 flex items-center gap-1"
+                            title="Activate Subscription"
+                          >
+                            <CreditCard className="w-4 h-4" />
+                            <ChevronDown className="w-3 h-3" />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                          <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Select Plan</div>
+                          {allAvailablePlans.map((plan) => (
+                            <DropdownMenuItem 
+                              key={plan.id}
+                              onClick={() => handleManualSubscription(u.id, plan.plan, plan.duration)}
+                            >
+                              <div className="flex flex-col">
+                                <span className="font-medium">{plan.label} ({plan.plan})</span>
+                                <span className="text-[10px] text-muted-foreground">UGX {plan.price.toLocaleString()}</span>
+                              </div>
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+
                       <button
                         onClick={() => updateUser(u.id, { role: u.role === "admin" ? "user" : "admin" })}
                         className="p-1.5 rounded hover:bg-secondary text-primary"

@@ -1,6 +1,12 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { formatUGX } from "@/data/subscriptions";
-import { XCircle } from "lucide-react";
+import { formatUGX, normalPlans, agentPlans } from "@/data/subscriptions";
+import { XCircle, ArrowUpCircle, ChevronDown } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const planPrices: Record<string, Record<string, number>> = {
   normal: { "1day": 5000, "1week": 10000, "1month": 25000 },
@@ -8,7 +14,19 @@ const planPrices: Record<string, Record<string, number>> = {
 };
 
 const AdminSubscriptions = () => {
-  const { allSubscriptions, allUsers, cancelSubscription } = useAuth();
+  const { allSubscriptions, allUsers, cancelSubscription, adminSubscribeForUser } = useAuth();
+  
+  const allAvailablePlans = [...normalPlans, ...agentPlans];
+
+  const handleUpdateSubscription = async (userId: string, planType: "normal" | "agent", duration: "1day" | "1week" | "1month") => {
+    try {
+      await adminSubscribeForUser(userId, planType, duration);
+      alert(`Subscription updated successfully to ${planType} ${duration}!`);
+    } catch (error) {
+      console.error("Error updating subscription:", error);
+      alert("Failed to update subscription.");
+    }
+  };
 
   return (
     <div>
@@ -76,11 +94,40 @@ const AdminSubscriptions = () => {
                       {new Date(s.endDate).toLocaleDateString()}
                     </td>
                     <td className="p-3 text-right">
-                      {s.status === "active" && (
-                        <button onClick={() => cancelSubscription(s.id)} className="p-1.5 rounded hover:bg-secondary text-destructive" title="Cancel">
-                          <XCircle className="w-4 h-4" />
-                        </button>
-                      )}
+                      <div className="flex items-center justify-end gap-1">
+                        {s.status === "active" && (
+                          <>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <button
+                                  className="p-1.5 rounded hover:bg-secondary text-primary flex items-center gap-1"
+                                  title="Change Plan"
+                                >
+                                  <ArrowUpCircle className="w-4 h-4" />
+                                  <ChevronDown className="w-3 h-3" />
+                                </button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="w-48">
+                                <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Change To Plan</div>
+                                {allAvailablePlans.map((plan) => (
+                                  <DropdownMenuItem 
+                                    key={plan.id}
+                                    onClick={() => handleUpdateSubscription(s.userId, plan.plan, plan.duration)}
+                                  >
+                                    <div className="flex flex-col">
+                                      <span className="font-medium">{plan.label} ({plan.plan})</span>
+                                      <span className="text-[10px] text-muted-foreground">UGX {plan.price.toLocaleString()}</span>
+                                    </div>
+                                  </DropdownMenuItem>
+                                ))}
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                            <button onClick={() => cancelSubscription(s.id)} className="p-1.5 rounded hover:bg-secondary text-destructive" title="Cancel">
+                              <XCircle className="w-4 h-4" />
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 );
