@@ -1,6 +1,6 @@
-import { Search, Menu, Download, User, LogOut, Shield } from "lucide-react";
+import { Search, Menu, Download, User, LogOut, Shield, Crown } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginModal from "@/components/LoginModal";
 
@@ -24,36 +24,14 @@ const LuoFilmHeader = ({ onToggleSidebar }: LuoFilmHeaderProps) => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-14 flex items-center justify-between px-4 bg-background/95 backdrop-blur-sm border-b border-border">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3">
         <button
           onClick={onToggleSidebar}
-          className="p-2 rounded-md hover:bg-secondary transition-colors hidden sm:block"
+          className="p-2 rounded-md hover:bg-secondary transition-colors"
           aria-label="Toggle sidebar"
         >
           <Menu className="w-5 h-5 text-foreground" />
         </button>
-        <a href="/" className="flex items-center gap-2">
-          <img src="https://i.postimg.cc/T2khf7dN/purple-pink-color-triangle-logo-1273375-228-removebg-preview.png" alt="Luo Film Logo" className="w-8 h-8 object-contain" />
-          <h1 className="text-foreground font-bold text-lg hidden sm:block">
-            <span className="gradient-primary-text">Luo</span> Film
-          </h1>
-        </a>
-      </div>
-
-      <form onSubmit={handleSearch} className="flex-1 max-w-xl mx-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Search movies / TV Shows"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-9 pl-10 pr-4 rounded-full bg-secondary border-none text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-          />
-        </div>
-      </form>
-
-      <div className="flex items-center gap-2">
         {isAuthenticated ? (
           <div className="relative">
             <button
