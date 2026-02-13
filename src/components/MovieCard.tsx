@@ -1,6 +1,7 @@
 import { Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { ExtendedMovie } from "@/contexts/MovieContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface MovieCardProps {
   movie: ExtendedMovie;
@@ -9,9 +10,11 @@ interface MovieCardProps {
 
 const MovieCard = ({ movie, isUpcoming }: MovieCardProps) => {
   const navigate = useNavigate();
+  const { trackActivity } = useAuth();
 
   const handleClick = () => {
     if (isUpcoming) return;
+    trackActivity("click", movie.id, movie.title);
     navigate(`/play/${movie.id}`);
   };
 

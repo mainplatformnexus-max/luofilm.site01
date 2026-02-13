@@ -1,19 +1,20 @@
 import { useState, useEffect } from "react";
 import LuoFilmHeader from "@/components/MovieBoxHeader";
-import LuoFilmSidebar from "@/components/MovieBoxSidebar";
-import HeroCarousel from "@/components/HeroCarousel";
-import MovieSection from "@/components/MovieSection";
-
 import { useMovies } from "@/contexts/MovieContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { X, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+
+const Index = () => {
+  const isMobile = useIsMobile();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { movies, series } = useMovies();
   const { user } = useAuth();
   const [showWelcome, setShowWelcome] = useState(false);
+  const [showAppPromo, setShowAppPromo] = useState(false);
   const [showAppPromo, setShowAppPromo] = useState(false);
 
   useEffect(() => {

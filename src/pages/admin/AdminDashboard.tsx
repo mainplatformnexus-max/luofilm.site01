@@ -1,6 +1,6 @@
 import { useMovies } from "@/contexts/MovieContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { Film, Tv, Users, CreditCard, TrendingUp, MonitorPlay, Image as ImageIcon, ExternalLink, Activity, Eye, Download, MousePointerClick } from "lucide-react";
+import { Film, Tv, Users, CreditCard, Activity, Eye, Download, MousePointerClick, Image as ImageIcon } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
