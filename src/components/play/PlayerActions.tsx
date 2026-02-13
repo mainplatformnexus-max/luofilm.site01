@@ -10,7 +10,7 @@ type PlayerActionsProps = {
 };
 
 export default function PlayerActions({ title, url }: PlayerActionsProps) {
-  const { hasNormalAccess, isAuthenticated } = useAuth();
+  const { hasNormalAccess, isAuthenticated, trackActivity } = useAuth();
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const canDownload = Boolean(url);
@@ -40,6 +40,8 @@ export default function PlayerActions({ title, url }: PlayerActionsProps) {
     // Set target to _blank to ensure it doesn't navigate away in some browsers
     // though the download attribute should handle it
     link.target = '_blank';
+    
+    trackActivity("download", title, title);
     
     document.body.appendChild(link);
     link.click();

@@ -19,7 +19,7 @@ const PlayPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { movies, series, episodes, loading } = useMovies();
-  const { isAuthenticated, hasNormalAccess, hasAgentAccess } = useAuth();
+  const { isAuthenticated, hasNormalAccess, hasAgentAccess, trackActivity } = useAuth();
   const artRef = useRef<HTMLDivElement>(null);
   const artInstance = useRef<Artplayer | null>(null);
   const [relatedContent, setRelatedContent] = useState<typeof movies>([]);
@@ -48,6 +48,7 @@ const PlayPage = () => {
 
   useEffect(() => {
     if (content) {
+      trackActivity("watch", content.id, content.title);
       const pageTitle = `${content.title} luo translated movies free download vj paul ug`;
       document.title = pageTitle;
 

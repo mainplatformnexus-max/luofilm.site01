@@ -26,7 +26,6 @@ const AdminDashboard = () => {
   const stats = [
     { label: "Total Movies", value: movies.length, icon: Film, color: "text-primary" },
     { label: "Total Series", value: series.length, icon: Tv, color: "text-accent" },
-    { label: "TV Channels", value: tvChannels.length, icon: MonitorPlay, color: "text-primary" },
     { label: "Total Users", value: allUsers.length, icon: Users, color: "text-primary" },
     { label: "Active Subs", value: allSubscriptions.filter((s) => s.status === "active").length, icon: CreditCard, color: "text-accent" },
     { label: "User Activities", value: allActivities.length, icon: Activity, color: "text-primary" },
@@ -94,7 +93,7 @@ const AdminDashboard = () => {
             {allActivities.length === 0 && <p className="text-center py-4 text-muted-foreground">No activity recorded yet</p>}
           </div>
         </div>
-      </div>
+
         <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-6">
             <ImageIcon className="w-5 h-5 text-primary" />
@@ -140,7 +139,9 @@ const AdminDashboard = () => {
             </Button>
           </div>
         </div>
+      </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
         <div className="bg-card rounded-xl border border-border p-4">
           <h3 className="font-semibold text-foreground mb-3">Recent Users</h3>
           <div className="space-y-2">
@@ -157,9 +158,7 @@ const AdminDashboard = () => {
             ))}
           </div>
         </div>
-      </div>
 
-      <div className="mt-8">
         <div className="bg-card rounded-xl border border-border p-4">
           <h3 className="font-semibold text-foreground mb-3">Recent Subscriptions</h3>
           <div className="space-y-2">
